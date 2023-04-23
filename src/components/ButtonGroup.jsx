@@ -1,8 +1,24 @@
 import { FiChevronDown, FiSettings } from "react-icons/fi";
 import Button from "./layouts/Button";
 import { useState } from "react";
+import Modal from "./Modal";
 
-const ButtonGroup = ({ handleShowForm }) => {
+const ButtonGroup = ({ setShowForm, setToogleDropdown, setToogleSetting }) => {
+  const handleShowForm = (e) => {
+    e.preventDefault();
+    setShowForm((showForm) => !showForm);
+  };
+
+  const toogleDropdown = (e) => {
+    e.preventDefault();
+    setToogleDropdown((toogleDropdown) => !toogleDropdown);
+  };
+
+  const toogleSetting = (e) => {
+    e.preventDefault();
+    setToogleSetting((toogleSetting) => !toogleSetting);
+  };
+
   return (
     <section className="flex flex-row w-[50%] sm:w-[45%] lg:w-[30%] 2xl:w-[20%] justify-self-end">
       <div className="flex gap-[1px] pr-3 grow" aria-label="button groups">
@@ -14,7 +30,7 @@ const ButtonGroup = ({ handleShowForm }) => {
           body="Add a note"
         />
         <Button
-          // onClick={showDropdown}
+          onClick={toogleDropdown}
           role={"drop down"}
           primary
           icon
@@ -23,7 +39,7 @@ const ButtonGroup = ({ handleShowForm }) => {
         />
       </div>
       <Button
-        // onClick={showSettingDropdown}
+        onClick={toogleSetting}
         role={"setting toogle"}
         ghost
         icon

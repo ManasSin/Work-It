@@ -3,7 +3,7 @@ import { FiGrid, FiLayers, FiUser } from "react-icons/fi";
 
 const Aside = () => {
   return (
-    <aside className="flex flex-col justify-end items-center w-[9%]">
+    <aside className="flex flex-col gap-6 py-[2%] justify-end items-center w-[9%]">
       <Button
         onClick={() => {}}
         role={"nav items"}
