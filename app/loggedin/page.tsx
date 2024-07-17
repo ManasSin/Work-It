@@ -1,8 +1,7 @@
 "use client";
 import MobileNav from "@/components/nav/mobileNav";
 import { Sidebar } from "@/components/nav/sideBar";
-import Tasks from "@/components/workIt/tasks";
-import UserProfile from "@/components/workIt/UserProfile";
+import TodoList from "@/components/uiPages/todoList";
 
 const LoggedIn = () => {
   return (
@@ -10,6 +9,7 @@ const LoggedIn = () => {
       <Sidebar />
       <div className="flex flex-col">
         <MobileNav />
+        <TodoList />
       </div>
     </main>
   );
