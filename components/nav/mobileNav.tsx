@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { primaeryNavItems } from "@/utlis";
+import { primaeryNavItems } from "@/utils";
 import UserProfile from "./UserProfile";
 import { ModeToggle } from "../ui/themeToggle";
 type Props = {};
@@ -99,9 +99,9 @@ const MobileNav = (props: Props) => {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button variant="secondary" size="icon" className="rounded-full">
-          <ModeToggle />
-        </Button>
+        {/* <Button variant="secondary" size="icon" className="rounded-full"> */}
+        <ModeToggle />
+        {/* </Button> */}
       </header>
     </div>
   );

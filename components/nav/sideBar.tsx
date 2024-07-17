@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { primaeryNavItems } from "@/utlis";
+import { primaeryNavItems } from "@/utils";
 import UserProfile from "./UserProfile";
 
 export function Sidebar() {

@@ -25,7 +25,7 @@ const UserProfile = (props: Props) => {
       <DropdownMenuTrigger asChild className="hover:cursor-pointer">
         <Button
           variant={"secondary"}
-          className="flex items-center justify-start gap-1 lg:gap-2 m-0 p-0 lg:px-3 lg:w-full bg-white"
+          className="flex items-center justify-start gap-1 lg:gap-2 m-0 p-0 lg:px-3 lg:w-full bg-white dark:bg-gray-800 dark:text-white"
         >
           {imageUrl && (
             <Image
