@@ -1,19 +1,23 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { handleUserID } from "./auth";
 
 export const get = query({
   args: {},
-  handler: async (ctr) => {
-    return await ctr.db.query("todos").collect();
+  handler: async (ctx) => {
+    return await ctx.db.query("todos").collect();
   },
 });
 
 export const CompletedTodos = query({
   args: {},
-  handler: async (ctr) => {
-    return await ctr.db
+  handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+    if (userId === null || userId === undefined) return [];
+    return await ctx.db
       .query("todos")
+      .filter((q) => q.eq(q.field("userId"), userId))
       .filter((q) => q.eq(q.field("isCompleted"), true))
       .collect();
   },
@@ -21,9 +25,12 @@ export const CompletedTodos = query({
 
 export const inCompleteTodos = query({
   args: {},
-  handler: async (ctr) => {
-    return await ctr.db
+  handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+    if (userId === null || userId === undefined) return [];
+    return await ctx.db
       .query("todos")
+      .filter((q) => q.eq(q.field("userId"), userId))
       .filter((q) => q.eq(q.field("isCompleted"), false))
       .collect();
   },
@@ -32,6 +39,8 @@ export const inCompleteTodos = query({
 export const totalTodos = query({
   args: {},
   handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+    if (userId === null || userId === undefined) return [];
     const todos = await ctx.db.query("todos").collect();
     return todos.length || 0;
     return 0;
@@ -51,9 +60,11 @@ export const createATodo = mutation({
     ctx,
     { taskName, description, priority, dueDate, projectId, labelId }
   ) => {
+    const userId = await handleUserID(ctx);
+    if (userId === null || userId === undefined) return [];
     try {
       const newTaskId = await ctx.db.insert("todos", {
-        userId: "jn78c1x0enbmbbgm69d44z8trn6wyaeg" as Id<"users">,
+        userId: userId,
         taskName,
         description,
         priority,
@@ -74,6 +85,8 @@ export const createATodo = mutation({
 export const checkATodo = mutation({
   args: { taskId: v.id("todos") },
   handler: async (ctx, { taskId }) => {
+    const userId = await handleUserID(ctx);
+    if (userId === null || userId === undefined) return [];
     const newTaskId = await ctx.db.patch(taskId, { isCompleted: true });
     return newTaskId;
   },
