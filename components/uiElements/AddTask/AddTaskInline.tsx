@@ -44,6 +44,7 @@ const FormSchema = z.object({
   taskName: z.string().min(2, {
     message: "Task name must be at least 2 characters.",
   }),
+  parentId: z.string().min(1, { message: "Please select a parent task" }),
   description: z.string().optional(),
   dueDate: z.date({ required_error: "A due date is required" }),
   priority: z.string().min(1, { message: "Please select a priority" }),
@@ -53,22 +54,32 @@ const FormSchema = z.object({
 
 export default function AddTaskInline({
   setShowAddTask,
+  // projectId,
+  parentTask,
 }: {
+  parentTask: Doc<"todos">;
+  // projectId: Id<"projects">;
   setShowAddTask: Dispatch<SetStateAction<boolean>>;
 }) {
+  const projectId = parentTask?.projectId || "k170zswmtt47tfphb23127xfvh6x047p";
+  const labelId = parentTask?.labelId || "jx7exg6r8h9495fkx1dfhmnnw56x136j";
+  const priority = parentTask?.priority?.toString() || "1";
+  const parentId = parentTask?._id;
+
   // const { toast } = useToast();
   const projects = useQuery(api.projects.getProjects) ?? [];
   const labels = useQuery(api.labels.getLabels) ?? [];
 
   const createATodoMutation = useMutation(api.todos.createATodo);
+  const createASubTodoMutation = useMutation(api.subTodos.createASubTodo);
 
   const defaultValues = {
     taskName: "",
     description: "",
-    priority: "1",
+    priority,
     dueDate: new Date(),
-    projectId: `#{process.env.GET_STARTED_PROJECT_ID}` as Id<"projects">,
-    labelId: `#{process.env.GET_STARTED_LABEL_ID}` as Id<"labels">,
+    projectId,
+    labelId,
   };
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -77,31 +88,58 @@ export default function AddTaskInline({
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const { taskName, description, priority, dueDate, projectId, labelId } =
-      data;
+    const {
+      parentId,
+      taskName,
+      description,
+      priority,
+      dueDate,
+      projectId,
+      labelId,
+    } = data;
 
     if (projectId) {
-      const mutationId = createATodoMutation({
-        taskName,
-        description,
-        priority: parseInt(priority),
-        dueDate: moment(dueDate).valueOf(),
-        projectId: projectId as Id<"projects">,
-        labelId: labelId as Id<"labels">,
-      });
+      if (parentId) {
+        const mutationId = createASubTodoMutation({
+          taskName,
+          description,
+          parentId: parentId as Id<"todos">,
+          priority: parseInt(priority),
+          dueDate: moment(dueDate).valueOf(),
+          projectId: projectId as Id<"projects">,
+          labelId: labelId as Id<"labels">,
+        });
 
-      if (mutationId !== undefined) {
-        // toast({
-        //   title: "🦄 Created a task!",
-        //   duration: 3000,
-        // });
-        form.reset({ ...defaultValues });
+        if (mutationId !== undefined) {
+          // toast({
+          //   title: "🦄 Created a task!",
+          //   duration: 3000,
+          // });
+          form.reset({ ...defaultValues });
+        }
+      } else {
+        const mutationId = createATodoMutation({
+          taskName,
+          description,
+          priority: parseInt(priority),
+          dueDate: moment(dueDate).valueOf(),
+          projectId: projectId as Id<"projects">,
+          labelId: labelId as Id<"labels">,
+        });
+
+        if (mutationId !== undefined) {
+          // toast({
+          //   title: "🦄 Created a task!",
+          //   duration: 3000,
+          // });
+          form.reset({ ...defaultValues });
+        }
       }
     }
   }
   return (
     <div>
-      {JSON.stringify(form.getValues(), null, 2)}
+      {/* {JSON.stringify(form.getValues(), null, 2)} */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -188,7 +226,10 @@ export default function AddTaskInline({
               name="priority"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={"1"}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={priority}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a Priority" />
@@ -214,7 +255,7 @@ export default function AddTaskInline({
                 <FormItem>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={labelId || field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -242,7 +283,7 @@ export default function AddTaskInline({
               <FormItem>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={projectId || field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -273,7 +314,7 @@ export default function AddTaskInline({
                 Cancel
               </Button>
               <Button className="px-6" type="submit">
-                Add task
+                {parentId ? "Add Sub Task" : "Add task"}
               </Button>
             </div>
           </CardFooter>

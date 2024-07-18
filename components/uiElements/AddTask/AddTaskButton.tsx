@@ -6,23 +6,24 @@ import AddTaskInline from "./AddTaskInline";
 
 export const AddTaskWrapper = ({
   parentTask,
-  projectId,
+  parentId,
 }: {
-  parentTask?: Doc<"todos">;
+  parentId?: Id<"todos">;
   projectId?: Id<"projects">;
+  parentTask: Doc<"todos">;
 }) => {
   const [showAddTask, setShowAddTask] = useState(false);
 
   return showAddTask ? (
     <AddTaskInline
       setShowAddTask={setShowAddTask}
-      // parentTask={parentTask}
       // projectId={projectId}
+      parentTask={parentTask}
     />
   ) : (
     <AddTaskButton
       onClick={() => setShowAddTask(true)}
-      title={parentTask?._id ? "Add sub-task" : "Add task"}
+      title={parentTask?._id ? "Add Sub Task" : "Add task"}
     />
   );
 };

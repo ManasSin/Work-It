@@ -5,6 +5,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import { Calendar, GitBranch, Tag } from "lucide-react";
 import moment from "moment";
+import AddTaskDialog from "./AddTask/AddTaskDialog";
 
 function isSubTodo(
   data: Doc<"todos"> | Doc<"subTodos">
@@ -71,6 +72,7 @@ export default function TaskPro({
             </DialogTrigger>
           </div>
           {/* {!isSubTodo(data) && <AddTaskDialog data={data} />} */}
+          <AddTaskDialog data={data} />
         </div>
       </Dialog>
     </div>
