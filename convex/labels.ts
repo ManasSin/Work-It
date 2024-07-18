@@ -27,7 +27,7 @@ export const getLabelByLabelId = query({
     if (userId === null || userId === undefined) return [];
     const project = await ctx.db
       .query("labels")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      // .filter((q) => q.eq(q.field("userId"), userId))s
       .filter((q) => q.eq(q.field("_id"), labelId))
       .collect();
 
