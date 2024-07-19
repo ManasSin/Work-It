@@ -36,7 +36,7 @@ const TodoList = (props: Props) => {
       <div className="flex flex-col gap-1 py-4">
         <Todos items={completedTodos} />
       </div>
-      <CompletedTodos totalTodos={totalTodos} />
+      <CompletedTodos totalTodos={totalTodos as number} />
     </div>
     // </div>
   );
