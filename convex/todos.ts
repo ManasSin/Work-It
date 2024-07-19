@@ -142,3 +142,27 @@ export const unCheckATodo = mutation({
     return newTaskId;
   },
 });
+
+export const groupTodosByDate = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+
+    if (userId) {
+      const todos = await ctx.db
+        .query("todos")
+        .filter((q) => q.eq(q.field("userId"), userId))
+        .filter((q) => q.gt(q.field("dueDate"), new Date().getTime()))
+        .collect();
+
+      const groupTodos = todos.reduce((acc: any, todo: any) => {
+        const date = new Date(todo.dueDate).toDateString();
+        acc[date] = (acc[date] || []).concat(todo);
+        return acc;
+      }, {});
+
+      return groupTodos;
+    }
+    return {};
+  },
+});
