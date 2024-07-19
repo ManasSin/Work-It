@@ -19,26 +19,21 @@ import { AddTaskWrapper } from "./AddTaskButton";
 export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
   const { taskName, description, projectId, labelId, priority, dueDate, _id } =
     data;
-
   const project = useQuery(api.projects.getProjectByProjectId, { projectId });
   const label = useQuery(api.labels.getLabelByLabelId, { labelId });
 
-  // console.log({ project });
+  const inCompletedSubtodosByProject =
+    useQuery(api.subTodos.inCompleteSubTodos) ?? [];
+
+  const completedSubtodosByProject =
+    useQuery(api.subTodos.completedSubTodos) ?? [];
+
+  const checkASubTodoMutation = useMutation(api.subTodos.checkASubTodo);
+  const unCheckASubTodoMutation = useMutation(api.subTodos.unCheckASubTodo);
 
   const [todoDetails, setTodoDetails] = useState<
     Array<{ labelName: string; value: string; icon: React.ReactNode }>
   >([]);
-
-  const inCompleteSubsubTodosByProject = useQuery(
-    api.subTodos.inCompleteSubTodos ?? []
-  );
-
-  const CompleteSubsubTodosByProject = useQuery(
-    api.subTodos.completedSubTodos ?? []
-  );
-
-  const checkASubTodoMutation = useMutation(api.subTodos.checkASubTodo);
-  const unCheckASubTodoMutation = useMutation(api.subTodos.unCheckASubTodo);
 
   useEffect(() => {
     const data = [
@@ -74,46 +69,42 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
   }, [dueDate, label?.name, priority, project]);
 
   return (
-    <DialogContent className="max-w-4xl lg:h-4/6 flex flex-col md:flex-row lg:justify-between text-right">
-      <DialogHeader className="md:w-2/3">
+    <DialogContent className="max-w-4xl lg:h-4/6 flex flex-col md:flex-row lg:justify-between text-right h-fit">
+      <DialogHeader className="w-full">
         <DialogTitle>{taskName}</DialogTitle>
         <DialogDescription>
           <p className="my-2 capitalize">{description}</p>
-          <div className="flex items-center gap-1 mt-12 border-2 border-gray-100 pb-2 flex-wrap justify-between lg:gap-0">
+          <div className="flex items-center gap-1 mt-12 border-b-2 border-gray-100 pb-2 flex-wrap sm:justify-between lg:gap-0 ">
             <div className="flex gap-1">
               <ChevronDown className="w-5 h-5 text-primary" />
-              <p className="text-sm font-bold flex text-gray-900 dark:text-white/80 ">
-                Sub tasks
-              </p>
+              <p className="font-bold flex text-sm text-gray-900">Sub-tasks</p>
             </div>
-            <div className="">
-              <Button variant={"outline"}>Suggest missing tasks AI</Button>
+            <div>
+              <Button variant={"outline"}>Suggest Missing Tasks (AI) 💖</Button>
             </div>
           </div>
           <div className="pl-4">
-            {inCompleteSubsubTodosByProject?.map((task, idx) => {
+            {inCompletedSubtodosByProject.map((task) => {
               return (
                 <TaskPro
-                  isCompleted={task.isCompleted}
+                  key={task._id}
                   data={task}
-                  showDetails={true}
+                  isCompleted={task.isCompleted}
                   handleOnChange={() =>
                     checkASubTodoMutation({ taskId: task._id })
                   }
                 />
               );
             })}
-
             <div className="pb-4">
               <AddTaskWrapper parentTask={data} />
             </div>
-
-            {CompleteSubsubTodosByProject?.map((task, idx) => {
+            {completedSubtodosByProject.map((task) => {
               return (
                 <TaskPro
-                  isCompleted={task.isCompleted}
+                  key={task._id}
                   data={task}
-                  showDetails={true}
+                  isCompleted={task.isCompleted}
                   handleOnChange={() =>
                     unCheckASubTodoMutation({ taskId: task._id })
                   }
@@ -123,16 +114,14 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
           </div>
         </DialogDescription>
       </DialogHeader>
-      <div className="flex flex-col gap-2 bg-gray-100 md:w-1/3 ">
+      <div className="flex flex-col gap-2 bg-gray-100 lg:w-1/2">
         {todoDetails.map(({ labelName, value, icon }, idx) => (
           <div
             key={`${value}-${idx}`}
             className="grid gap-2 p-4 border-b-2 w-full"
           >
-            <Label className="flex items-start text-black/90">
-              {labelName}
-            </Label>
-            <div className="flex text-left items-center text-black/60 justify-start gap-2 pb-2">
+            <Label className="flex items-start">{labelName}</Label>
+            <div className="flex text-left items-center justify-start gap-2 pb-2">
               {icon}
               <p className="text-sm">{value}</p>
             </div>

@@ -44,7 +44,6 @@ const FormSchema = z.object({
   taskName: z.string().min(2, {
     message: "Task name must be at least 2 characters.",
   }),
-  parentId: z.string().min(1, { message: "Please select a parent task" }),
   description: z.string().optional(),
   dueDate: z.date({ required_error: "A due date is required" }),
   priority: z.string().min(1, { message: "Please select a priority" }),
@@ -54,12 +53,10 @@ const FormSchema = z.object({
 
 export default function AddTaskInline({
   setShowAddTask,
-  // projectId,
   parentTask,
 }: {
-  parentTask: Doc<"todos">;
-  // projectId: Id<"projects">;
   setShowAddTask: Dispatch<SetStateAction<boolean>>;
+  parentTask?: Doc<"todos">;
 }) {
   const projectId = parentTask?.projectId || "k170zswmtt47tfphb23127xfvh6x047p";
   const labelId = parentTask?.labelId || "jx7exg6r8h9495fkx1dfhmnnw56x136j";
@@ -88,22 +85,16 @@ export default function AddTaskInline({
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const {
-      parentId,
-      taskName,
-      description,
-      priority,
-      dueDate,
-      projectId,
-      labelId,
-    } = data;
+    const { taskName, description, priority, dueDate, projectId, labelId } =
+      data;
 
     if (projectId) {
       if (parentId) {
+        //subtodo
         const mutationId = createASubTodoMutation({
+          parentId,
           taskName,
           description,
-          parentId: parentId as Id<"todos">,
           priority: parseInt(priority),
           dueDate: moment(dueDate).valueOf(),
           projectId: projectId as Id<"projects">,
@@ -111,10 +102,7 @@ export default function AddTaskInline({
         });
 
         if (mutationId !== undefined) {
-          // toast({
-          //   title: "🦄 Created a task!",
-          //   duration: 3000,
-          // });
+          // toast
           form.reset({ ...defaultValues });
         }
       } else {
@@ -128,10 +116,7 @@ export default function AddTaskInline({
         });
 
         if (mutationId !== undefined) {
-          // toast({
-          //   title: "🦄 Created a task!",
-          //   duration: 3000,
-          // });
+          // toast
           form.reset({ ...defaultValues });
         }
       }
@@ -139,7 +124,7 @@ export default function AddTaskInline({
   }
   return (
     <div>
-      {/* {JSON.stringify(form.getValues(), null, 2)} */}
+      {JSON.stringify(form.getValues(), null, 2)}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -314,7 +299,7 @@ export default function AddTaskInline({
                 Cancel
               </Button>
               <Button className="px-6" type="submit">
-                {parentId ? "Add Sub Task" : "Add task"}
+                Add task
               </Button>
             </div>
           </CardFooter>
