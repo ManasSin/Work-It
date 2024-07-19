@@ -16,7 +16,14 @@ export default function Todos({ items }: { items: Array<Doc<"todos">> }) {
       checkATodo({ taskId: task._id });
     }
   };
-  return items.map((task: Doc<"todos">, idx: number) => (
+  if (!items) {
+    return (
+      <div className="flex flex-col gap-1 py-4">
+        <p className="font-bold flex text-sm">No tasks</p>
+      </div>
+    );
+  }
+  return items?.map((task: Doc<"todos">, idx: number) => (
     <TaskPro
       key={task._id}
       data={task}
