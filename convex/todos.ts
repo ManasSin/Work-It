@@ -2,11 +2,54 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { handleUserID } from "./auth";
+import moment from "moment";
 
 export const get = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query("todos").collect();
+  },
+});
+
+export const todayTodos = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+
+    if (userId) {
+      const todayStart = moment().startOf("day");
+      const todayEnd = moment().endOf("day");
+
+      return await ctx.db
+        .query("todos")
+        .filter((q) => q.eq(q.field("userId"), userId))
+        .filter(
+          (q) =>
+            q.gte(q.field("dueDate"), todayStart.valueOf()) &&
+            q.lte(todayEnd.valueOf(), q.field("dueDate"))
+        )
+        .collect();
+    }
+    return [];
+  },
+});
+
+export const overdueTodos = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+
+    if (userId) {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      return await ctx.db
+        .query("todos")
+        .filter((q) => q.eq(q.field("userId"), userId))
+        .filter((q) => q.lt(q.field("dueDate"), todayStart.getTime()))
+        .collect();
+    }
+    return [];
   },
 });
 

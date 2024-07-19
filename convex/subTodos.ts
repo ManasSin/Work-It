@@ -1,6 +1,20 @@
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
 import { handleUserID } from "./auth";
+
+export const get = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await handleUserID(ctx);
+    if (userId) {
+      return await ctx.db
+        .query("subTodos")
+        .filter((q) => q.eq(q.field("userId"), userId))
+        .collect();
+    }
+    return [];
+  },
+});
 
 export const checkASubTodo = mutation({
   args: { taskId: v.id("subTodos") },
@@ -22,18 +36,55 @@ export const unCheckASubTodo = mutation({
   },
 });
 
+export const createASubTodo = mutation({
+  args: {
+    taskName: v.string(),
+    description: v.optional(v.string()),
+    priority: v.number(),
+    dueDate: v.number(),
+    projectId: v.id("projects"),
+    labelId: v.id("labels"),
+    parentId: v.id("todos"),
+  },
+  handler: async (
+    ctx,
+    { taskName, description, priority, dueDate, projectId, labelId, parentId }
+  ) => {
+    try {
+      const userId = await handleUserID(ctx);
+      if (userId) {
+        const newTaskId = await ctx.db.insert("subTodos", {
+          userId,
+          parentId,
+          taskName,
+          description,
+          priority,
+          dueDate,
+          projectId,
+          labelId,
+          isCompleted: false,
+        });
+        return newTaskId;
+      }
+      return null;
+    } catch (err) {
+      console.log("Error occurred during createASubTodo mutation", err);
+
+      return null;
+    }
+  },
+});
+
 export const completedSubTodos = query({
   args: {},
   handler: async (ctx) => {
     const userId = await handleUserID(ctx);
     if (userId) {
-      const subTodos = await ctx.db
+      return await ctx.db
         .query("subTodos")
         .filter((q) => q.eq(q.field("userId"), userId))
         .filter((q) => q.eq(q.field("isCompleted"), true))
         .collect();
-
-      return subTodos;
     }
     return [];
   },
@@ -43,52 +94,13 @@ export const inCompleteSubTodos = query({
   args: {},
   handler: async (ctx) => {
     const userId = await handleUserID(ctx);
-    // if (userId) {
-    const todos = await ctx.db
-      .query("subTodos")
-      .filter((q) => q.eq(q.field("userId"), userId))
-      .filter((q) => q.eq(q.field("isCompleted"), false))
-      .collect();
-    return todos;
-    // }
-    // return [];
-  },
-});
-
-export const createASubTodo = mutation({
-  args: {
-    parentId: v.id("todos"),
-    taskName: v.string(),
-    description: v.optional(v.string()),
-    priority: v.number(),
-    dueDate: v.number(),
-    projectId: v.id("projects"),
-    labelId: v.id("labels"),
-  },
-  handler: async (
-    ctx,
-    { parentId, taskName, description, priority, dueDate, projectId, labelId }
-  ) => {
-    const userId = await handleUserID(ctx);
-    if (userId === null || userId === undefined) return [];
-    try {
-      const newTaskId = await ctx.db.insert("subTodos", {
-        userId: userId,
-        parentId,
-        taskName,
-        description,
-        priority,
-        dueDate,
-        projectId,
-        labelId,
-        isCompleted: false,
-      });
-      console.log({ "new task id is": newTaskId });
-      return newTaskId;
-    } catch (err) {
-      console.log("Error occurred during createATodo mutation", err);
-
-      return "";
+    if (userId) {
+      return await ctx.db
+        .query("subTodos")
+        .filter((q) => q.eq(q.field("userId"), userId))
+        .filter((q) => q.eq(q.field("isCompleted"), false))
+        .collect();
     }
+    return [];
   },
 });
