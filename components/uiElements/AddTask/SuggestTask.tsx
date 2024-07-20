@@ -8,8 +8,16 @@ import { useToast } from "@/components/ui/use-toast";
 
 export default function SuggestMissingTasks({
   projectId,
+  taskname,
+  description,
+  parentId,
+  isSubTask,
 }: {
   projectId: Id<"projects">;
+  taskname?: string;
+  description?: string;
+  parentId: Id<"todos">;
+  isSubTask?: boolean;
 }) {
   const { toast } = useToast();
   const [isLoadingSuggestMissingTasks, setIsLoadingSuggestMissingTasks] =
@@ -20,6 +28,9 @@ export default function SuggestMissingTasks({
 
   const suggestMissingTasks =
     useAction(api.openai.suggestMissingItemsWithAi, { projectId }) || [];
+
+  const suggestMissingSubTasks =
+    useAction(api.openai.suggestMissingSubItemsWithAi, { projectId }) || [];
 
   const handleMissingTasks = async () => {
     setIsLoadingSuggestMissingTasks(true);
@@ -40,12 +51,36 @@ export default function SuggestMissingTasks({
     }
   };
 
+  const handleMissingSubTasks = async () => {
+    setIsLoadingSuggestMissingTasks(true);
+    try {
+      await suggestMissingSubTasks({
+        projectId,
+        parentId,
+        taskname,
+        description,
+      });
+    } catch (error) {
+      console.log("Error in suggestMissingTasks", error);
+      setSuggestAiTaskResponse(
+        "My openAI credit limit must be exhausted, Sorry for the poor experience"
+      );
+      toast({
+        title:
+          "My openAI credit limit must be exhausted, Sorry for the poor experience",
+        description: "Please mail me for reminder",
+      });
+    } finally {
+      setIsLoadingSuggestMissingTasks(false);
+    }
+  };
+
   return (
     <>
       <Button
         variant={"outline"}
         disabled={isLoadingSuggestMissingTasks}
-        onClick={handleMissingTasks}
+        onClick={isSubTask ? handleMissingTasks : handleMissingSubTasks}
       >
         {isLoadingSuggestMissingTasks ? (
           <div className="flex gap-2">

@@ -15,6 +15,7 @@ import { api } from "@/convex/_generated/api";
 import { useEffect, useState } from "react";
 import TaskPro from "../taskPro";
 import { AddTaskWrapper } from "./AddTaskButton";
+import SuggestMissingTasks from "./SuggestTask";
 
 export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
   const { taskName, description, projectId, labelId, priority, dueDate, _id } =
@@ -82,7 +83,13 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
               </p>
             </div>
             <div>
-              <Button variant={"outline"}>Suggest Missing Tasks (AI) 💖</Button>
+              <SuggestMissingTasks
+                projectId={projectId}
+                taskName={taskName}
+                description={description}
+                parentId={_id}
+                isSubTask={true}
+              />
             </div>
           </div>
           <div className="pl-4">
