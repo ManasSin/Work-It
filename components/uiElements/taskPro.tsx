@@ -72,7 +72,7 @@ export default function TaskPro({
             </DialogTrigger>
           </div>
           {/* {!isSubTodo(data) && <AddTaskDialog data={data} />} */}
-          <AddTaskDialog data={data} />
+          {!data?.parentId && <AddTaskDialog data={data} />}
         </div>
       </Dialog>
     </div>
