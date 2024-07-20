@@ -3,6 +3,8 @@
 import MobileNav from "@/components/nav/mobileNav";
 import { Sidebar } from "@/components/nav/sideBar";
 import { AddTaskWrapper } from "@/components/uiElements/AddTask/AddTaskButton";
+import SuggestMissingTasks from "@/components/uiElements/AddTask/SuggestTask";
+import SuggestMissingTask from "@/components/uiElements/AddTask/SuggestTask";
 import CompletedTodos from "@/components/uiElements/completedTodos";
 import Todos from "@/components/uiElements/todos";
 import { api } from "@/convex/_generated/api";
@@ -38,8 +40,11 @@ export default function ProjectIdPage() {
       <div className="flex flex-col">
         <MobileNav />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:px-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2 lg:gap-0">
             <h1 className="text-lg font-semibold md:text-2xl">{projectName}</h1>
+            <div className="flex gap-6 lg:gap-12 items-center">
+              <SuggestMissingTasks projectId={projectId} />
+            </div>
           </div>
           <Todos items={inCompletedTodosByProject} />
 
