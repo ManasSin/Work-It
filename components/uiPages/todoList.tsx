@@ -7,6 +7,7 @@ import Task from "../uiElements/task";
 import Todos from "../uiElements/todos";
 import CompletedTodos from "../uiElements/completedTodos";
 import { AddTaskWrapper } from "../uiElements/AddTask/AddTaskButton";
+import TotalTodos from "../uiElements/totalTodos";
 
 type Props = {};
 
@@ -31,12 +32,15 @@ const TodoList = (props: Props) => {
       </div>
       <div className="flex flex-col gap-1 py-4">
         <Todos items={inCompleteTodos} />
+        <TotalTodos totalTodos={totalTodos as number} />
       </div>
       <AddTaskWrapper />
       <div className="flex flex-col gap-1 py-4">
         <Todos items={completedTodos} />
       </div>
-      <CompletedTodos totalTodos={totalTodos as number} />
+      <CompletedTodos
+        totalTodos={Object.keys(completedTodos).length as number}
+      />
     </div>
     // </div>
   );
