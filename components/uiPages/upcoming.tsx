@@ -5,6 +5,7 @@ import { AddTaskWrapper } from "@/components/uiElements/AddTask/AddTaskButton";
 import { Dot } from "lucide-react";
 import moment from "moment";
 import Todos from "../uiElements/todos";
+import TotalTodos from "../uiElements/totalTodos";
 
 export default function Upcoming() {
   const groupTodosByDate = useQuery(api.todos.groupTodosByDate) ?? [];
@@ -22,6 +23,9 @@ export default function Upcoming() {
       <div className="flex flex-col gap-1 py-4">
         <p className="font-bold flex text-sm">Overdue</p>
         <Todos items={overdueTodos} />
+        <div className="py-3">
+          <TotalTodos totalTodos={Object.keys(overdueTodos).length} />
+        </div>
       </div>
 
       <div className="flex flex-col gap-1 py-4">
