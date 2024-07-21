@@ -1,6 +1,8 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, action } from "./_generated/server";
 import { v } from "convex/values";
 import { handleUserID } from "./auth";
+import { getEmbeddingsWithAI } from "./openai";
+import { api } from "./_generated/api";
 
 export const get = query({
   args: {},
@@ -62,10 +64,20 @@ export const createASubTodo = mutation({
     projectId: v.id("projects"),
     labelId: v.id("labels"),
     parentId: v.id("todos"),
+    emdedding: v.optional(v.array(v.float64())),
   },
   handler: async (
     ctx,
-    { taskName, description, priority, dueDate, projectId, labelId, parentId }
+    {
+      taskName,
+      description,
+      priority,
+      dueDate,
+      projectId,
+      labelId,
+      parentId,
+      embedding,
+    }
   ) => {
     try {
       const userId = await handleUserID(ctx);
@@ -80,6 +92,7 @@ export const createASubTodo = mutation({
           projectId,
           labelId,
           isCompleted: false,
+          embedding,
         });
         return newTaskId;
       }
@@ -128,5 +141,33 @@ export const inCompleteSubTodos = query({
     return todos;
     // }
     // return [];
+  },
+});
+
+export const createSubTodoAndEmbeddings = action({
+  args: {
+    taskName: v.string(),
+    description: v.optional(v.string()),
+    priority: v.number(),
+    dueDate: v.number(),
+    projectId: v.id("projects"),
+    labelId: v.id("labels"),
+    parentId: v.id("todos"),
+  },
+  handler: async (
+    ctx,
+    { taskName, description, priority, dueDate, projectId, labelId, parentId }
+  ) => {
+    const embedding = await getEmbeddingsWithAI(taskName);
+    await ctx.runMutation(api.subTodos.createASubTodo, {
+      taskName,
+      description,
+      priority,
+      dueDate,
+      projectId,
+      labelId,
+      parentId,
+      embedding,
+    });
   },
 });
