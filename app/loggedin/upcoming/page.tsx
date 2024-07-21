@@ -1,6 +1,5 @@
 import MobileNav from "@/components/nav/mobileNav";
 import { Sidebar } from "@/components/nav/sideBar";
-import Today from "@/components/uiPages/today";
 import Upcoming from "@/components/uiPages/upcoming";
 
 export default function Home() {

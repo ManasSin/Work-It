@@ -1,6 +1,5 @@
 import { SignInActon } from "@/actions/auth-action";
 import { Button } from "@/components/ui/button";
-import Tasks from "@/components/workIt/tasks";
 
 export default function Home() {
   return (
