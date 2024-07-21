@@ -8,15 +8,15 @@ import { useToast } from "@/components/ui/use-toast";
 
 export default function SuggestMissingTasks({
   projectId,
-  taskname,
-  description,
+  taskName = "",
+  description = "",
   parentId,
-  isSubTask,
+  isSubTask = false,
 }: {
   projectId: Id<"projects">;
-  taskname?: string;
+  taskName?: string;
   description?: string;
-  parentId: Id<"todos">;
+  parentId?: Id<"todos">;
   isSubTask?: boolean;
 }) {
   const { toast } = useToast();
@@ -35,7 +35,14 @@ export default function SuggestMissingTasks({
   const handleMissingTasks = async () => {
     setIsLoadingSuggestMissingTasks(true);
     try {
-      await suggestMissingTasks({ projectId });
+      if (parentId) {
+        await suggestMissingSubTasks({
+          projectId,
+          taskName,
+          description,
+          parentId,
+        });
+      }
     } catch (error) {
       console.log("Error in suggestMissingTasks", error);
       setSuggestAiTaskResponse(
@@ -57,7 +64,7 @@ export default function SuggestMissingTasks({
       await suggestMissingSubTasks({
         projectId,
         parentId,
-        taskname,
+        taskName,
         description,
       });
     } catch (error) {

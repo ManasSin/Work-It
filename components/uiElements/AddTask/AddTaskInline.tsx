@@ -37,19 +37,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Doc, Id } from "@/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-
-const FormSchema = z.object({
-  taskName: z.string().min(2, {
-    message: "Task name must be at least 2 characters.",
-  }),
-  description: z.string().optional(),
-  dueDate: z.date({ required_error: "A due date is required" }),
-  priority: z.string().min(1, { message: "Please select a priority" }),
-  projectId: z.string().min(1, { message: "Please select a Project" }),
-  labelId: z.string().min(1, { message: "Please select a Label" }),
-});
+import { FormSchema } from "@/utils/ZodSchema";
 
 export default function AddTaskInline({
   setShowAddTask,
@@ -67,8 +57,11 @@ export default function AddTaskInline({
   const projects = useQuery(api.projects.getProjects) ?? [];
   const labels = useQuery(api.labels.getLabels) ?? [];
 
-  const createATodoMutation = useMutation(api.todos.createATodo);
-  const createASubTodoMutation = useMutation(api.subTodos.createASubTodo);
+  const createASubTodoEmbeddings = useAction(
+    api.subTodos.createSubTodoAndEmbeddings
+  );
+
+  const createTodoEmbeddings = useAction(api.todos.createTodoAndEmbeddings);
 
   const defaultValues = {
     taskName: "",
@@ -84,14 +77,14 @@ export default function AddTaskInline({
     defaultValues,
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     const { taskName, description, priority, dueDate, projectId, labelId } =
       data;
 
     if (projectId) {
       if (parentId) {
         //subtodo
-        const mutationId = createASubTodoMutation({
+        const mutationId = createASubTodoEmbeddings({
           parentId,
           taskName,
           description,
@@ -106,7 +99,7 @@ export default function AddTaskInline({
           form.reset({ ...defaultValues });
         }
       } else {
-        const mutationId = createATodoMutation({
+        const mutationId = createTodoEmbeddings({
           taskName,
           description,
           priority: parseInt(priority),
