@@ -35,14 +35,7 @@ export default function SuggestMissingTasks({
   const handleMissingTasks = async () => {
     setIsLoadingSuggestMissingTasks(true);
     try {
-      if (parentId) {
-        await suggestMissingSubTasks({
-          projectId,
-          taskName,
-          description,
-          parentId,
-        });
-      }
+      await suggestMissingTasks({ projectId });
     } catch (error) {
       console.log("Error in suggestMissingTasks", error);
       setSuggestAiTaskResponse(
