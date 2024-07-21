@@ -4,6 +4,7 @@ import { Id } from "./_generated/dataModel";
 import { handleUserID } from "./auth";
 import moment from "moment";
 import { getEmbeddingsWithAI } from "./openai";
+import { api } from "./_generated/api";
 
 export const get = query({
   args: {},

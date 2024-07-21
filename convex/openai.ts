@@ -80,10 +80,11 @@ export const suggestMissingSubItemsWithAi = action({
       parentId,
     });
 
-    const projects = await ctx.runQuery(api.todos.getProjectByProjectId, {
+    const projects = await ctx.runQuery(api.projects.getProjectByProjectId, {
       projectId,
     });
 
+    // @ts-ignore
     const projectName = projects?.name || "";
 
     const response = await openai.chat.completions.create({

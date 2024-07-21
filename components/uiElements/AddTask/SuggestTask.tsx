@@ -27,10 +27,10 @@ export default function SuggestMissingTasks({
     useState<string>("");
 
   const suggestMissingTasks =
-    useAction(api.openai.suggestMissingItemsWithAi, { projectId }) || [];
+    useAction(api.openai.suggestMissingItemsWithAi) || [];
 
   const suggestMissingSubTasks =
-    useAction(api.openai.suggestMissingSubItemsWithAi, { projectId }) || [];
+    useAction(api.openai.suggestMissingSubItemsWithAi) || [];
 
   const handleMissingTasks = async () => {
     setIsLoadingSuggestMissingTasks(true);
@@ -61,12 +61,14 @@ export default function SuggestMissingTasks({
   const handleMissingSubTasks = async () => {
     setIsLoadingSuggestMissingTasks(true);
     try {
-      await suggestMissingSubTasks({
-        projectId,
-        parentId,
-        taskName,
-        description,
-      });
+      if (parentId) {
+        await suggestMissingSubTasks({
+          projectId,
+          parentId,
+          taskName,
+          description,
+        });
+      }
     } catch (error) {
       console.log("Error in suggestMissingTasks", error);
       setSuggestAiTaskResponse(
