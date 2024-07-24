@@ -3,7 +3,7 @@ import { action, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { handleUserID } from "./auth";
 import moment from "moment";
-import { getEmbeddingsWithAI } from "./openai";
+import { getEmbeddingsWithAI } from "./gemini";
 import { api } from "./_generated/api";
 
 export const get = query({
@@ -267,5 +267,28 @@ export const createTodoAndEmbeddings = action({
       labelId,
       embedding,
     });
+  },
+});
+
+export const deleteATodo = mutation({
+  args: {
+    taskId: v.id("todos"),
+  },
+  handler: async (ctx, { taskId }) => {
+    try {
+      const userId = await handleUserID(ctx);
+      if (userId) {
+        const deletedTaskId = await ctx.db.delete(taskId);
+        //query todos and map through them and delete
+
+        return deletedTaskId;
+      }
+
+      return null;
+    } catch (err) {
+      console.log("Error occurred during deleteATodo mutation", err);
+
+      return null;
+    }
   },
 });
