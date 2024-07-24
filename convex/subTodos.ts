@@ -1,7 +1,7 @@
 import { query, mutation, action } from "./_generated/server";
 import { v } from "convex/values";
 import { handleUserID } from "./auth";
-import { getEmbeddingsWithAI } from "./openai";
+import { getEmbeddingsWithAI } from "./gemini";
 import { api } from "./_generated/api";
 
 export const get = query({
@@ -64,7 +64,7 @@ export const createASubTodo = mutation({
     projectId: v.id("projects"),
     labelId: v.id("labels"),
     parentId: v.id("todos"),
-    emdedding: v.optional(v.array(v.float64())),
+    embedding: v.optional(v.array(v.float64())),
   },
   handler: async (
     ctx,
@@ -169,5 +169,28 @@ export const createSubTodoAndEmbeddings = action({
       parentId,
       embedding,
     });
+  },
+});
+
+export const deleteASubTodo = mutation({
+  args: {
+    taskId: v.id("subTodos"),
+  },
+  handler: async (ctx, { taskId }) => {
+    try {
+      const userId = await handleUserID(ctx);
+      if (userId) {
+        const deletedTaskId = await ctx.db.delete(taskId);
+        //query todos and map through them and delete
+
+        return deletedTaskId;
+      }
+
+      return null;
+    } catch (err) {
+      console.log("Error occurred during deleteASubTodo mutation", err);
+
+      return null;
+    }
   },
 });

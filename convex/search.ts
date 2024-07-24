@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { action, internalQuery } from "./_generated/server";
-import { getEmbeddingsWithAI } from "./openai";
+import { getEmbeddingsWithAI } from "./gemini";
 import { internal } from "./_generated/api";
 import { handleUserID } from "./auth";
 
@@ -29,12 +29,10 @@ export const searchTasks = action({
     try {
       const userId = await handleUserID(ctx);
       if (userId) {
-        // 1. Generate an embedding from you favorite third party API:
         const embedding = await getEmbeddingsWithAI(query);
 
-        // 2. Then search for similar foods!
         const results = await ctx.vectorSearch("todos", "by_embedding", {
-          vector: embedding,
+          vector: embedding ? embedding : [],
           limit: 16,
           filter: (q) => q.eq("userId", userId),
         });
