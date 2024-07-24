@@ -1,4 +1,4 @@
-import { CircleUser, Menu, PlusIcon } from "lucide-react";
+import { Menu, PlusIcon } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -11,21 +11,12 @@ import {
 } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { primaryNavItems } from "@/utils";
-import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import UserProfile from "./UserProfile";
 
-import WorkItLogo from "@/public/assets/Work-IT.svg";
-import SearchForm from "./searchFrom";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { ModeToggle } from "../ui/themeToggle";
+import SearchForm from "./searchFrom";
+import AddProjectDialog from "../uiElements/AddProject/AddProjectDialog";
 type Props = {};
 
 const MobileNav = ({
@@ -59,18 +50,13 @@ const MobileNav = ({
               </Link>
             ))}
 
-            <Dialog>
-              <DialogTrigger id="closeDialog">
-                <p className="flex justify-between items-center">
-                  My Projects
-                  <PlusIcon className="h-5 w-5" aria-label="Add a Project" />
-                </p>
-              </DialogTrigger>
-              <DialogContent>hii</DialogContent>
-            </Dialog>
+            <div className="flex items-center mt-6 mb-2">
+              <p className="flex flex-1 text-base">My Project</p>
+              <AddProjectDialog />
+            </div>
           </nav>
           <div className="mt-auto">
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Upgrade to Pro</CardTitle>
                 <CardDescription>
@@ -83,7 +69,7 @@ const MobileNav = ({
                   Upgrade
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </SheetContent>
       </Sheet>
@@ -91,7 +77,7 @@ const MobileNav = ({
         <div className="lg:flex-1">
           <Link href={navLink}>
             <p className="text-sm font-semibold text-foreground/70 w-24">
-              {navLink}
+              {navTitle}
             </p>
           </Link>
         </div>
@@ -102,7 +88,7 @@ const MobileNav = ({
           {/* <Image alt="logo" src={WorkItLogo} /> */}
         {/* <p className="font-black text-blue-700 text-2xl">Work It</p> */}
         {/* </div> */}
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <CircleUser className="h-5 w-5" />
@@ -117,7 +103,7 @@ const MobileNav = ({
             <DropdownMenuSeparator />
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
         {/* <Button variant="secondary" size="icon" className="rounded-full"> */}
         <ModeToggle />
       </div>

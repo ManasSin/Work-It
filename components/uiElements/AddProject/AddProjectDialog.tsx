@@ -8,7 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -29,16 +35,16 @@ export default function AddProjectDialog() {
 }
 
 function AddProjectDialogContent() {
-  const form = useForm({ defaultValues: { name: "" } });
+  const form = useForm({ defaultValues: { name: "", description: "" } });
   const { toast } = useToast();
   const router = useRouter();
 
   const createAProject = useMutation(api.projects.createAProject);
 
-  const onSubmit = async ({ name }: any) => {
-    console.log("submitted", { name });
+  const onSubmit = async ({ name, description }: any) => {
+    // console.log("submitted", { name, description });
 
-    const projectId = await createAProject({ name });
+    const projectId = await createAProject({ name, description });
 
     if (projectId !== undefined) {
       toast({
@@ -50,7 +56,7 @@ function AddProjectDialogContent() {
     }
   };
   return (
-    <DialogContent className="max-w-xl lg:h-56 flex flex-col md:flex-row lg:justify-between text-right">
+    <DialogContent className="max-w-xl lg:h-fit flex flex-col md:flex-row lg:justify-between text-right">
       <DialogHeader className="w-full">
         <DialogTitle>Add a Project</DialogTitle>
         <DialogDescription className="capitalize">
@@ -64,11 +70,31 @@ function AddProjectDialogContent() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Project Name</FormLabel>
                     <FormControl>
                       <Input
                         id="name"
                         type="text"
                         placeholder="Project name"
+                        required
+                        className="border-0 font-semibold text-lg"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              ></FormField>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Description</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="description"
+                        type="text"
+                        placeholder="Project description"
                         required
                         className="border-0 font-semibold text-lg"
                         {...field}

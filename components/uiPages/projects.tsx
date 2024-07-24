@@ -23,7 +23,7 @@ export default function ProjectList() {
                   htmlFor="projects"
                   className="text-base font-normal hover:cursor-pointer"
                 >
-                  {project.name}
+                  {project?.name}
                 </Label>
               </div>
             </Link>

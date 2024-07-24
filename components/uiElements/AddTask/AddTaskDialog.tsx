@@ -1,4 +1,4 @@
-import { Doc } from "@/convex/_generated/dataModel";
+import { Doc, Id } from "@/convex/_generated/dataModel";
 import {
   DialogContent,
   DialogDescription,
@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import TaskPro from "../taskPro";
 import { AddTaskWrapper } from "./AddTaskButton";
 import SuggestMissingTasks from "./SuggestTask";
+import DeleteProject from "../DeleteAProject/DeleteProject";
+import TotalTodos from "../totalTodos";
 
 export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
   const { taskName, description, projectId, labelId, priority, dueDate, _id } =
@@ -31,6 +33,9 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
 
   const checkASubTodoMutation = useMutation(api.subTodos.checkASubTodo);
   const unCheckASubTodoMutation = useMutation(api.subTodos.unCheckASubTodo);
+  const getTaskByProjectId = useQuery(api.todos.getTodosByProjectId, {
+    projectId: projectId,
+  });
 
   const [todoDetails, setTodoDetails] = useState<
     Array<{ labelName: string; value: string; icon: React.ReactNode }>
@@ -70,7 +75,7 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
   }, [dueDate, label?.name, priority, project]);
 
   return (
-    <DialogContent className="max-w-4xl lg:h-4/6 flex flex-col md:flex-row lg:justify-between text-right h-fit">
+    <DialogContent className="max-w-4xl lg:h-fit flex flex-col md:flex-row lg:justify-between text-right h-fit overflow-auto transition-transform scroll-smooth">
       <DialogHeader className="w-full grow">
         <DialogTitle>{taskName}</DialogTitle>
         <DialogDescription>
@@ -82,13 +87,22 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
                 Sub-tasks
               </p>
             </div>
-            <div>
-              <SuggestMissingTasks
+            <div className="flex items-center justify-end gap-3">
+              <div>
+                <SuggestMissingTasks
+                  projectId={projectId}
+                  taskName={taskName}
+                  description={description}
+                  parentId={_id}
+                  isSubTask={true}
+                />
+              </div>
+              <DeleteProject
                 projectId={projectId}
-                taskName={taskName}
-                description={description}
-                parentId={_id}
-                isSubTask={true}
+                taskId={
+                  getTaskByProjectId &&
+                  (getTaskByProjectId[0]._id as Id<"todos">)
+                }
               />
             </div>
           </div>
@@ -105,6 +119,9 @@ export default function AddTaskDialog({ data }: { data: Doc<"todos"> }) {
                 />
               );
             })}
+            <div className="pb-4">
+              <TotalTodos totalTodos={inCompletedSubtodosByProject.length} />
+            </div>
             <div className="pb-4">
               <AddTaskWrapper parentTask={data} />
             </div>

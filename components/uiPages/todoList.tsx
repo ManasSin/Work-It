@@ -2,16 +2,12 @@
 
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import React from "react";
-import Task from "../uiElements/task";
-import Todos from "../uiElements/todos";
-import CompletedTodos from "../uiElements/completedTodos";
 import { AddTaskWrapper } from "../uiElements/AddTask/AddTaskButton";
+import CompletedTodos from "../uiElements/completedTodos";
+import Todos from "../uiElements/todos";
 import TotalTodos from "../uiElements/totalTodos";
 
-type Props = {};
-
-const TodoList = (props: Props) => {
+const TodoList = () => {
   const todos = useQuery(api.todos.get) ?? [];
   const completedTodos = useQuery(api.todos.CompletedTodos) ?? [];
   const inCompleteTodos = useQuery(api.todos.inCompleteTodos) ?? [];

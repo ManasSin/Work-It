@@ -44,12 +44,18 @@ import { FormSchema } from "@/utils/ZodSchema";
 export default function AddTaskInline({
   setShowAddTask,
   parentTask,
+  projectId: _projectId,
 }: {
   setShowAddTask: Dispatch<SetStateAction<boolean>>;
+  projectId?: Id<"projects">;
   parentTask?: Doc<"todos">;
 }) {
-  const projectId = parentTask?.projectId || "k170zswmtt47tfphb23127xfvh6x047p";
-  const labelId = parentTask?.labelId || "jx7exg6r8h9495fkx1dfhmnnw56x136j";
+  const projectId =
+    _projectId ||
+    parentTask?.projectId ||
+    ("k170zswmtt47tfphb23127xfvh6x047p" as Id<"projects">);
+  const labelId =
+    parentTask?.labelId || ("jx7exg6r8h9495fkx1dfhmnnw56x136j" as Id<"labels">);
   const priority = parentTask?.priority?.toString() || "1";
   const parentId = parentTask?._id;
 
@@ -117,7 +123,7 @@ export default function AddTaskInline({
   }
   return (
     <div>
-      {JSON.stringify(form.getValues(), null, 2)}
+      {/* {JSON.stringify(form.getValues(), null, 2)} */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
