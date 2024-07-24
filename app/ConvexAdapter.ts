@@ -30,7 +30,7 @@ export const ConvexAdapter: Adapter = {
     });
     return { ...session, id };
   },
-  async createUser({ ...user }: User) {
+  async createUser({ id: _, ...user }: User) {
     const id = await callMutation(api.authAdapter.createUser, {
       user: toDB(user),
     });
@@ -51,7 +51,6 @@ export const ConvexAdapter: Adapter = {
   },
   async deleteUser(id: Id<"users">) {
     return maybeUserFromDB(
-      // @ts-ignore
       await callMutation(api.authAdapter.deleteUser, { id })
     );
   },

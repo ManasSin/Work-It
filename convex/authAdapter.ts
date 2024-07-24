@@ -30,11 +30,6 @@ const adapterMutation = customMutation(mutation, {
 });
 
 function checkSecret(secret: string) {
-  if (process.env.CONVEX_AUTH_ADAPTER_SECRET === undefined) {
-    throw new Error(
-      "Missing CONVEX_AUTH_ADAPTER_SECRET Convex environment variable"
-    );
-  }
   if (secret !== process.env.CONVEX_AUTH_ADAPTER_SECRET) {
     throw new Error("Adapter API called without correct secret value");
   }
@@ -57,7 +52,7 @@ export const createSession = adapterMutation({
 export const createUser = adapterMutation({
   args: { user: v.object(userSchema) },
   handler: async (ctx, { user }) => {
-    return await ctx.db.insert("users", user);
+    return await ctx.db.insert("users", user as any);
   },
 });
 
