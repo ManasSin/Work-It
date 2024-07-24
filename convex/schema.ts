@@ -81,7 +81,7 @@ export default defineSchema({
     embedding: v.optional(v.array(v.float64())),
   }).vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 1536,
+    dimensions: 768,
     filterFields: ["userId"],
   }),
   subTodos: defineTable({
@@ -97,7 +97,7 @@ export default defineSchema({
     embedding: v.optional(v.array(v.float64())),
   }).vectorIndex("by_embedding", {
     vectorField: "embedding",
-    dimensions: 1536,
+    dimensions: 768,
     filterFields: ["userId"],
   }),
   labels: defineTable({
