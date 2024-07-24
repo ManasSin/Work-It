@@ -10,7 +10,7 @@ import TotalTodos from "../uiElements/totalTodos";
 export default function Upcoming() {
   const groupTodosByDate = useQuery(api.todos.groupTodosByDate) ?? [];
   const overdueTodos = useQuery(api.todos.overdueTodos) ?? [];
-  console.log(groupTodosByDate);
+  // console.log(groupTodosByDate);
 
   //   if (todos === undefined || groupedTodosByDate === undefined) {
   //     return <p>Loading...</p>;

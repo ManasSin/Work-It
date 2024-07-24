@@ -11,7 +11,7 @@ export default function SearchForm() {
   const router = useRouter();
 
   const onSubmit = async ({ searchText }: any) => {
-    console.log("submitted", { searchText });
+    // console.log("submitted", { searchText });
     router.push(`/loggedin/search/${searchText}`);
   };
 

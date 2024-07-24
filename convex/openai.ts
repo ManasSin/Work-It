@@ -40,11 +40,11 @@ export const suggestMissingItemsWithAi = action({
       model: "gpt-3.5-turbo",
     });
 
-    console.log(response);
+    // console.log(response);
 
     const messageContent = response.choices[0].message?.content;
 
-    console.log({ messageContent });
+    // console.log({ messageContent });
 
     //create the todos
     if (messageContent) {
@@ -99,6 +99,7 @@ export const suggestMissingSubItemsWithAi = action({
           content: JSON.stringify(
             todos,
             projectName,
+            // @ts-expect-error
             ...{ parentTodo: { taskName, description } }
           ),
         },
@@ -109,11 +110,11 @@ export const suggestMissingSubItemsWithAi = action({
       model: "gpt-3.5-turbo",
     });
 
-    console.log(response);
+    // console.log(response);
 
     const messageContent = response.choices[0].message?.content;
 
-    console.log({ messageContent });
+    // console.log({ messageContent });s
 
     //create the todos
     if (messageContent) {
@@ -165,7 +166,7 @@ export const getEmbeddingsWithAI = async (searchText: string) => {
   const json = await response.json();
   const vector = json["data"][0]["embedding"];
 
-  console.log(`Embedding of ${searchText}: , ${vector.length} dimensions`);
+  // console.log(`Embedding of ${searchText}: , ${vector.length} dimensions`);
 
   return vector;
 };

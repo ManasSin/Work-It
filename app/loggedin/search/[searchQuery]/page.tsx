@@ -17,7 +17,7 @@ export default function Search() {
 
   const vectorSearch = useAction(api.search.searchTasks);
 
-  console.log({ searchQuery });
+  // console.log({ searchQuery });
 
   useEffect(() => {
     const handleSearch = async () => {

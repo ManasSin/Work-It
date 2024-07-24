@@ -3,6 +3,7 @@ import { Noto_Sans_Georgian } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import React from "react";
 
 const defaultFont = Noto_Sans_Georgian({ subsets: ["latin"] });
 
