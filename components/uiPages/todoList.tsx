@@ -28,7 +28,7 @@ const TodoList = () => {
       </div>
       <div className="flex flex-col gap-1 py-4">
         <Todos items={inCompleteTodos} />
-        <TotalTodos totalTodos={totalTodos as number} />
+        <TotalTodos totalTodos={inCompleteTodos.length as number} />
       </div>
       <AddTaskWrapper />
       <div className="flex flex-col gap-1 py-4">
