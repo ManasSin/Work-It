@@ -1,13 +1,7 @@
 "use client";
 
 import { SignInActon } from "@/actions/auth-action";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
-import { Spotlight } from "../ui/Spotlight";
-import { TextGenerateEffect } from "../ui/TextGenerateEffect";
 import { navItems } from "@/utils";
-import FloatingNavbar from "../ui/FloatingNavbar";
 import {
   Brain,
   Calendar,
@@ -16,7 +10,12 @@ import {
   Target,
   Users,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import FloatingNavbar from "../ui/FloatingNavbar";
+import { TextGenerateEffect } from "../ui/TextGenerateEffect";
 
 type Props = {};
 
@@ -29,24 +28,21 @@ function LandingHome({}: Props) {
   }
 
   return (
-    <div className="min-h-screen w-full overflow-auto bg-gradient-to-b from-background to-background/95 relative">
-      <FloatingNavbar
-        navList={navItems}
-        actionLable={`${session ? "Sign Out" : "Login"}`}
-      />
-      <Hero />
-      <Features />
-      <AISection />
-      <Testimonials />
-      <CTASection />
-      <Spotlight />
-    </div>
+    <>
+      <div className="min-h-screen h-screen">
+        <FloatingNavbar
+          navList={navItems}
+          actionLable={`${session ? "Sign Out" : "Login"}`}
+        />
+        <Hero />
+      </div>
+    </>
   );
 }
 
-function Hero() {
+export function Hero() {
   return (
-    <div className="relative isolate pt-14 dark:bg-gray-900">
+    <div className="relative isolate pt-14 dark:bg-gray-900 h-screen">
       <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
         <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
       </div>
@@ -86,7 +82,7 @@ function Hero() {
   );
 }
 
-function Features() {
+export function Features() {
   const features = [
     {
       name: "AI-Powered Task Suggestions",
@@ -157,7 +153,7 @@ function Features() {
   );
 }
 
-function AISection() {
+export function AISection() {
   return (
     <div className="overflow-hidden py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -257,7 +253,7 @@ function AISection() {
   );
 }
 
-function Testimonials() {
+export function Testimonials() {
   return (
     <div className="py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -326,7 +322,7 @@ function Testimonials() {
   );
 }
 
-function CTASection() {
+export function CTASection() {
   return (
     <div className="relative isolate mt-16 px-6 py-24 sm:mt-32 sm:py-32 lg:px-8">
       <div className="absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 transform-gpu overflow-hidden opacity-30 blur-3xl">
